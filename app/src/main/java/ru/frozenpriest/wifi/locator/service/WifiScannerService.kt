@@ -1,5 +1,8 @@
+@file:SuppressLint("MissingPermission")
+
 package ru.frozenpriest.wifi.locator.service
 
+import android.annotation.SuppressLint
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
@@ -48,9 +51,6 @@ class WifiScannerService : LifecycleService() {
     }
 
     private suspend fun startWifiScanner() = withContext(Dispatchers.IO) {
-        val wifiManager = applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
-        val wifiNetworkReceiver = WifiNetworkReceiver(wifiManager)
-
         val filter = IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION)
         registerReceiver(wifiNetworkReceiver, filter)
 
@@ -64,6 +64,11 @@ class WifiScannerService : LifecycleService() {
         }
     }
 
+    private fun handleWifiScanFinished() {
+        val wifiScanResults = wifiManager.scanResults
+        Timber.d("Wifi scan results:\n${wifiScanResults.joinToString("\n")}")
+    }
+
 // MARK: - Constants
 
     private object Time {
@@ -72,8 +77,14 @@ class WifiScannerService : LifecycleService() {
 
 // MARK: - Variables
 
+    private val wifiNetworkReceiver = WifiNetworkReceiver(this::handleWifiScanFinished)
+
     private val _applicationNotifications: ApplicationNotifications by lazy {
         ApplicationNotifications(this)
+    }
+
+    private val wifiManager: WifiManager by lazy {
+        applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
     }
 
     private inline val _lifecycleScope: CoroutineScope

@@ -1,23 +1,15 @@
-@file:SuppressLint("MissingPermission")
-
 package ru.frozenpriest.wifi.locator.service
 
-import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.net.wifi.WifiManager
-import timber.log.Timber
+import ru.frozenpriest.wifi.locator.core.ActionBlock
 
-class WifiNetworkReceiver(wifiManager: WifiManager) : BroadcastReceiver() {
+class WifiNetworkReceiver(private val wifiScanFinished: ActionBlock) : BroadcastReceiver() {
 
 // MARK: - Methods
 
     override fun onReceive(context: Context, intent: Intent) {
-        Timber.d("Got wifi: ${_wifiManager.scanResults}")
+        wifiScanFinished.invoke()
     }
-
-// MARK: - Variables
-
-    private val _wifiManager: WifiManager = wifiManager
 }
