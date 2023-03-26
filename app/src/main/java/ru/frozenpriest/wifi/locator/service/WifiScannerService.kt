@@ -8,6 +8,10 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.net.wifi.WifiManager
+import android.net.wifi.rtt.RangingRequest
+import android.net.wifi.rtt.RangingResult
+import android.net.wifi.rtt.RangingResultCallback
+import android.net.wifi.rtt.WifiRttManager
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.CoroutineScope
@@ -52,11 +56,11 @@ class WifiScannerService : LifecycleService() {
 
     private suspend fun startWifiScanner() = withContext(Dispatchers.IO) {
         val filter = IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION)
-        registerReceiver(wifiNetworkReceiver, filter)
+        registerReceiver(_wifiNetworkReceiver, filter)
 
         launch {
             while (true) {
-                val scanStarted = wifiManager.startScan()
+                val scanStarted = _wifiManager.startScan()
                 Timber.d("Scan requested: $scanStarted")
 
                 delay(Time.WIFI_SCAN_PERIOD)
@@ -65,8 +69,30 @@ class WifiScannerService : LifecycleService() {
     }
 
     private fun handleWifiScanFinished() {
-        val wifiScanResults = wifiManager.scanResults
+        val wifiScanResults = _wifiManager.scanResults
         Timber.d("Wifi scan results:\n${wifiScanResults.joinToString("\n")}")
+
+        val rangingRequest = RangingRequest.Builder()
+            .addAccessPoints(wifiScanResults)
+            .build()
+
+        _wifiRttManager.startRanging(
+            rangingRequest,
+            mainExecutor,
+            RttResultsListener(),
+        )
+    }
+
+// MARK: - Inner Types
+
+    private inner class RttResultsListener : RangingResultCallback() {
+        override fun onRangingFailure(errorCode: Int) {
+            Timber.e("Error using rtt wifi.")
+        }
+
+        override fun onRangingResults(results: List<RangingResult>) {
+            Timber.d("Wifi rtt results:\n${results.joinToString("\n")}")
+        }
     }
 
 // MARK: - Constants
@@ -77,14 +103,18 @@ class WifiScannerService : LifecycleService() {
 
 // MARK: - Variables
 
-    private val wifiNetworkReceiver = WifiNetworkReceiver(this::handleWifiScanFinished)
+    private val _wifiNetworkReceiver = WifiNetworkReceiver(this::handleWifiScanFinished)
 
     private val _applicationNotifications: ApplicationNotifications by lazy {
         ApplicationNotifications(this)
     }
 
-    private val wifiManager: WifiManager by lazy {
+    private val _wifiManager: WifiManager by lazy {
         applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
+    }
+
+    private val _wifiRttManager: WifiRttManager by lazy {
+        applicationContext.getSystemService(Context.WIFI_RTT_RANGING_SERVICE) as WifiRttManager
     }
 
     private inline val _lifecycleScope: CoroutineScope
