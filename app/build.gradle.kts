@@ -60,11 +60,15 @@ dependencies {
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.android.material)
     implementation(libs.compose.ui)
     implementation(libs.compose.material)
     implementation(libs.compose.ui.tooling)
+
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.lifecycle.service)
+
+    implementation(libs.timber)
 
     testImplementation(libs.junit)
 

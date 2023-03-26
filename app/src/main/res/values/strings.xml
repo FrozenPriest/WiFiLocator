@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">Wi-Fi Locator</string>
+    <string name="wifi_scanner_channel">Wi-Fi Scanner Service</string>
+    <string name="wifi_scanner_running">Wi-Fi scanner running</string>
+    <string name="wifi_scanner">Wi-Fi Scanner</string>
 </resources>
