@@ -2,6 +2,9 @@ package ru.frozenpriest.wifi.locator
 
 import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build.VERSION
+import android.os.Build.VERSION_CODES
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -27,12 +30,16 @@ class MainActivity : ComponentActivity() {
             }
         }
 
-        val permissions = arrayOf(
+        val permissions = mutableListOf(
             Manifest.permission.ACCESS_COARSE_LOCATION,
             Manifest.permission.ACCESS_FINE_LOCATION,
         )
 
-        _requestPermissionLauncher.launch(permissions)
+        if (VERSION.SDK_INT >= VERSION_CODES.TIRAMISU) {
+            permissions.add(Manifest.permission.NEARBY_WIFI_DEVICES)
+        }
+
+        _requestPermissionLauncher.launch(permissions.toTypedArray())
     }
 
     private val _requestPermissionLauncher = registerForActivityResult(RequestMultiplePermissions()) { permissions ->
@@ -42,6 +49,8 @@ class MainActivity : ComponentActivity() {
         }
 
         if (allPermissionsGranted) {
+            Timber.d("Rtt is available: ${packageManager.hasSystemFeature(PackageManager.FEATURE_WIFI_RTT)}")
+
             Timber.d("Location permission granted, starting scanner service...")
             val serviceIntent = Intent(this, WifiScannerService::class.java)
             startForegroundService(serviceIntent)

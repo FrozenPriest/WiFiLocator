@@ -12,6 +12,7 @@ import android.net.wifi.rtt.RangingRequest
 import android.net.wifi.rtt.RangingResult
 import android.net.wifi.rtt.RangingResultCallback
 import android.net.wifi.rtt.WifiRttManager
+import android.widget.Toast
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.CoroutineScope
@@ -92,6 +93,7 @@ class WifiScannerService : LifecycleService() {
 
         override fun onRangingResults(results: List<RangingResult>) {
             Timber.d("Wifi rtt results:\n${results.joinToString("\n")}")
+            Toast.makeText(this@WifiScannerService, "Got results", Toast.LENGTH_LONG).show()
         }
     }
 
