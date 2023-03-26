@@ -1,4 +1,4 @@
-package template.theme
+package ru.frozenpriest.wifi.locator.theme
 
 import android.annotation.TargetApi
 import android.os.Build

@@ -1,4 +1,4 @@
-package template.theme
+package ru.frozenpriest.wifi.locator.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
