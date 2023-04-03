@@ -15,7 +15,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import ru.frozenpriest.wifi.locator.service.WifiScannerService
-import ru.frozenpriest.wifi.locator.theme.TemplateTheme
+import ru.frozenpriest.wifi.locator.theme.LocatorTheme
 import timber.log.Timber
 
 class MainActivity : ComponentActivity() {
@@ -25,7 +25,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            TemplateTheme {
+            LocatorTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(color = MaterialTheme.colorScheme.background) {
                     Greeting("Android")
@@ -83,7 +83,7 @@ fun Greeting(name: String) {
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
-    TemplateTheme {
+    LocatorTheme {
         Greeting("Android")
     }
 }

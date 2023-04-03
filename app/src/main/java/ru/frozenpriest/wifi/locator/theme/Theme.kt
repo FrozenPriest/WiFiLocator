@@ -23,7 +23,7 @@ private val lightColorScheme = lightColorScheme(
 
 @Composable
 @TargetApi(Build.VERSION_CODES.S)
-fun TemplateTheme(
+fun LocatorTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     dynamicTheme: Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S,
     content: @Composable () -> Unit,
