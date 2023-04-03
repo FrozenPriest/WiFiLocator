@@ -30,6 +30,7 @@ buildscript {
 plugins {
     // https://github.com/jeremymailen/kotlinter-gradle/releases
     id("org.jmailen.kotlinter") version "3.13.0" apply false
+    id("org.jetbrains.kotlin.android") version "1.8.0" apply false
 }
 
 apply(from = "buildscripts/githooks.gradle")

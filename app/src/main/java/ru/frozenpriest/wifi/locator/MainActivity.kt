@@ -1,6 +1,6 @@
 package ru.frozenpriest.wifi.locator
 
-import android.Manifest
+import android.Manifest.permission
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build.VERSION
@@ -19,6 +19,9 @@ import ru.frozenpriest.wifi.locator.theme.TemplateTheme
 import timber.log.Timber
 
 class MainActivity : ComponentActivity() {
+
+// MARK: - Methods
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -30,20 +33,25 @@ class MainActivity : ComponentActivity() {
             }
         }
 
+        requestPermissions()
+    }
+
+// MARK: - Private Methods
+
+    private fun requestPermissions() {
         val permissions = mutableListOf(
-            Manifest.permission.ACCESS_COARSE_LOCATION,
-            Manifest.permission.ACCESS_FINE_LOCATION,
+            permission.ACCESS_COARSE_LOCATION,
+            permission.ACCESS_FINE_LOCATION,
         )
 
         if (VERSION.SDK_INT >= VERSION_CODES.TIRAMISU) {
-            permissions.add(Manifest.permission.NEARBY_WIFI_DEVICES)
+            permissions.add(permission.NEARBY_WIFI_DEVICES)
         }
 
         _requestPermissionLauncher.launch(permissions.toTypedArray())
     }
 
-    private val _requestPermissionLauncher = registerForActivityResult(RequestMultiplePermissions()) { permissions ->
-
+    private fun handlePermissionsResult(permissions: Map<String, Boolean>) {
         val allPermissionsGranted = permissions.values.fold(true) { permissionsGranted, currentPermissionGranted ->
             permissionsGranted && currentPermissionGranted
         }
@@ -58,6 +66,13 @@ class MainActivity : ComponentActivity() {
             Timber.d("Some permissions were denied.")
         }
     }
+
+// Mark: - Variables
+
+    private val _requestPermissionLauncher = registerForActivityResult(
+        RequestMultiplePermissions(),
+        this::handlePermissionsResult,
+    )
 }
 
 @Composable
