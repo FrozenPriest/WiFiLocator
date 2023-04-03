@@ -37,8 +37,8 @@ apply(from = "buildscripts/githooks.gradle")
 apply(from = "buildscripts/setup.gradle")
 
 subprojects {
-    apply(from = "../buildscripts/detekt.gradle")
-    apply(from = "../buildscripts/versionsplugin.gradle")
+    apply(from = "${rootProject.projectDir}/buildscripts/detekt.gradle")
+    apply(from = "${rootProject.projectDir}/buildscripts/versionsplugin.gradle")
 }
 
 tasks.register("clean", Delete::class) {

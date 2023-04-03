@@ -8,3 +8,4 @@ dependencyResolutionManagement {
 rootProject.name = "Wi-Fi Locator"
 include(":app")
 include(":data")
+include(":data:datastore")
